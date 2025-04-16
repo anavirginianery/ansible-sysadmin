@@ -47,7 +47,7 @@ cd ansible-sysadmin/ansible-demo
 
 ```ini
 [webservers]
-192.168.0.10 ansible_user=seu_usuario
+<ip_da_vm> ansible_user=seu_usuario
 ```
 
 **Execute o playbook:**
