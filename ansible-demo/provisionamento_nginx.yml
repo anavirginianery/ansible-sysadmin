@@ -1,0 +1,70 @@
+# Este é um Playbook do Ansible, escrito em YAML, que será executado no grupo de hosts "web".
+- name: Provisionar servidor com Nginx e página personalizada
+  hosts: web         # Refere-se ao grupo definido no arquivo de inventário (hosts)
+  become: true       # Indica que as tarefas precisam de privilégios administrativos (sudo)
+
+  # Variáveis definidas no escopo do playbook (podem ser reutilizadas nas tarefas)
+  vars:
+    nginx_index_path: /var/www/html/index.html
+    custom_message: "<h1>Servidor provisionado com Ansible!</h1>"
+
+  tasks:             # Lista de tarefas a serem executadas, em ordem
+    # ----------------------
+    # Módulo: apt
+    # Atualiza o cache de pacotes do apt
+    - name: Atualizar cache do apt
+      apt:
+        update_cache: yes
+      tags: update   # Tag opcional, usada para executar essa tarefa isoladamente
+
+    # ----------------------
+    # Módulo: apt
+    # Instala o pacote nginx, garantindo que esteja presente
+    - name: Instalar nginx
+      apt:
+        name: nginx
+        state: present
+      tags: install
+
+    # ----------------------
+    # Módulo: copy
+    # Substitui a página inicial padrão do Nginx com conteúdo personalizado
+    - name: Substituir página inicial do Nginx
+      copy:
+        content: "{{ custom_message }}"  # Usa a variável definida acima
+        dest: "{{ nginx_index_path }}"   # Também usa variável
+        owner: www-data
+        group: www-data
+        mode: '0644'
+        backup: yes   # Faz backup do arquivo original
+      tags: config
+
+    # ----------------------
+    # Módulo: service
+    # Garante que o nginx esteja iniciado e configurado para iniciar com o sistema
+    - name: Garantir que o serviço nginx está iniciado e habilitado
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      tags: service
+
+    # ----------------------
+    # Módulo: uri
+    # Aqui usamos uma “API local” (requisição HTTP) para verificar se o Nginx está funcionando
+    # Isso simula uma verificação de serviço após o provisionamento
+    - name: Verificar se o Nginx está respondendo na porta 80
+      uri:
+        url: http://localhost
+        return_content: yes
+      register: nginx_response   # Armazena a resposta em uma variável para uso posterior
+      tags: check
+
+    # ----------------------
+    # Módulo: debug
+    # Exibe no terminal o conteúdo retornado pela página do Nginx
+    - name: Mostrar conteúdo retornado pelo Nginx
+      debug:
+        msg: "Resposta do servidor: {{ nginx_response.content }}"
+      tags: check
+
