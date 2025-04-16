@@ -55,3 +55,16 @@ cd ansible-sysadmin/ansible-demo
 ```bash
 ansible-playbook -i hosts provisionamento_nginx.yml
 ```
+
+## 📚 Cursos Gratuitos de Ansible
+
+Abaixo estão algumas opções de cursos gratuitos para quem deseja aprofundar os conhecimentos em Ansible:
+
+- [Curso gratuito da Red Hat sobre Ansible (em português)](https://www.redhat.com/pt-br/blog/new-free-ansible-course)  
+  Curso introdutório oficial da Red Hat, com foco em automação de infraestrutura.
+
+- [Cursos gratuitos de Ansible na Udemy](https://www.udemy.com/pt/topic/ansible/free/)  
+  Lista de cursos gratuitos disponíveis na plataforma Udemy, em diversos idiomas.
+
+Explore esses conteúdos para complementar sua prática e obter uma base sólida sobre a ferramenta!
+
